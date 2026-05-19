@@ -8,14 +8,9 @@ This repository contains the end-to-end implementation of a scalable, robust Dat
 
 The solution uses a  **Medallion Architecture (Bronze -> Silver -> Gold)** , ensuring absolute segregation between raw landing storage, structural data quality cleaning, and downstream semantic consumption matrices.
 
-```
-+------------+       +---------------+       +---------------+       +---------------+
-| Raw Source |       | Bronze Layer  |       | Silver Layer  |       |  Gold Layer   |
-| CSV Files  | ----> | Truncate/Load | ----> | Data Cleansing| ----> | Star Schema   |
-| (CRM/ERP)  |       | (Raw Staging) |       | & Conformance |       | Views/Tables  |
-+------------+       +---------------+       +---------------+       +---------------+
-```
-
+---
+<img src="Assets/high_level.png" width="800"/>
+---
 ### 🟤 Bronze Layer (Staging)
 
 * **Purpose:** Houses exact, un-manipulated mirrors of source raw infrastructure data.
@@ -41,7 +36,12 @@ The solution uses a  **Medallion Architecture (Bronze -> Silver -> Gold)** , ens
 ---
 
 ## 📊 Data Integration & Star Schema Design
+---
+<img src="Assets/integration.png" width="800"/>
+<img src="Assets/flow.png" width="800"/>
+<img src="Assets/mart.png" width="800"/>
 
+---
 The warehouse unifies records spanning disparate operational databases across critical transactional domains:
 
 ### Core Entity Linking Topology
@@ -52,32 +52,13 @@ The warehouse unifies records spanning disparate operational databases across cr
 
 ### Star Schema Relationships
 
-```
-              +----------------------------+
-              |     gold.dim_date          |
-              +----------------------------+
-              | PK | date_key              |
-              +----------------------------+
-                             | 1
-                             |
-                             | *
-+-------------------------+  |  +----------------------------+  * +----------------------------+
-| gold.fact_dim_cust_rep  |--+--|      gold.fact_sales       |-----+| gold.fact_dim_prod_rep    |
-+-------------------------+ * +----------------------------+ 1   +----------------------------+
-| PK | customer_key       |     | PK  | sales_order_key (ID) |     | PK | product_key           |
-|    | customer_number    |     | DD  | order_number         |     |    | product_name          |
-|    | full_name          |     | FK1 | order_date           |     |    | category              |
-|    | country            |     | FK2 | customer_key         |     |    | sub_category          |
-|    | customer_segment   |     | FK3 | product_key          |     |    | cost                  |
-+-------------------------+     |     | quantity             |     |    | performance_segment   |
-                                |     | sales_amount         |     +----------------------------+
-                                +----------------------------+
-```
+---
+<img src="Assets/Schema.png" width="800"/>
 
 ---
-
+---
 ## 🛠️ Data Quality Suite (QA Framework)
-
+---
 A rigorous unit-testing script accompanies this deployment, ensuring structural integrity before execution pipelines process analytical inputs:
 
 * **Primary Key Validation:** Groups identifier fields using `HAVING COUNT(*) > 1` rules to verify that zero duplicate rows exit structural transitions.
@@ -95,7 +76,9 @@ A rigorous unit-testing script accompanies this deployment, ensuring structural 
 The optimized Gold semantic tier drives three comprehensive business views engineered for modern retail monitoring:
 
 ### 1. Executive Operations Overview
-
+---
+<img src="Assets/Overview.png" width="800"/>
+---
 An enterprise operational interface displaying core financial KPIs at a glance.
 
 * **Financial Metrics:** Tracking total sales volumes (29.35M), order processing caps (28K), and units sold (60K).
@@ -103,7 +86,9 @@ An enterprise operational interface displaying core financial KPIs at a glance.
 * **Geographic Demographics:** Highlights distinct operational markets, revealing top market shares concentrated across the United States (9.2M) and Australia (9.1M).
 
 ### 2. Customer Lifecycle Performance
-
+---
+<img src="Assets/Customers Performance.png" width="800"/>
+---
 An analytical environment focused on demographic distribution and behavioral clustering.
 
 * **Customer Metrics:** Identifies active market sizing (18.482K total profiles) alongside average sales value mappings (1.59K).
@@ -111,7 +96,9 @@ An analytical environment focused on demographic distribution and behavioral clu
 * **Segment Tracking:** Surfaces customer values across behavioral categories, indicating that **77.8%** of base revenue operations come from **VIP** account networks.
 
 ### 3. Product Demand Analysis
-
+---
+<img src="Assets/Products.png" width="800"/>
+---
 A tactical reporting deck focusing on operational product lines, costs, and inventory trends.
 
 * **Product Performance:** Ranks items by sales volumes, pinpointing key revenue drivers like the *Mountain-200* and *Road-150* lines.
